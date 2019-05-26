@@ -131,7 +131,7 @@ ifeq ($(MCL_USE_GMP),1)
   endif
 endif
 ifeq ($(MCL_USE_OPENSSL),1)
-  OPENSSL_LIB=-lcrypto
+  OPENSSL_LIB=-L${OPENSSL_DIR}/lib -lcrypto
   ifeq ($(UNAME_S),Darwin)
     OPENSSL_DIR?=/usr/local/opt/openssl
     CFLAGS+=-I$(OPENSSL_DIR)/include
