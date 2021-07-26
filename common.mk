@@ -1,5 +1,6 @@
 GCC_VER=$(shell $(PRE)$(CC) -dumpversion)
 UNAME_S=$(shell uname -s)
+ARCH?=$(shell uname -m)
 ifeq ($(UNAME_S),Linux)
   OS=Linux
 endif
@@ -11,10 +12,13 @@ ifeq ($(findstring CYGWIN,$(UNAME_S)),CYGWIN)
   OS=cygwin
 endif
 ifeq ($(UNAME_S),Darwin)
-  OS=mac
-  ARCH=x86_64
+  ifeq ($(ARCH),x86_64)
+    OS=mac
+  else
+    OS=mac-m1
+  endif
   LIB_SUF=dylib
-  OPENSSL_DIR?=/usr/local/opt/openssl
+  OPENSSL_DIR?=/opt/homebrew/opt/openssl@1.1
   CFLAGS+=-I$(OPENSSL_DIR)/include
   LDFLAGS+=-L$(OPENSSL_DIR)/lib
   GMP_DIR?=/usr/local/opt/gmp
@@ -23,7 +27,6 @@ ifeq ($(UNAME_S),Darwin)
 else
   LIB_SUF=so
 endif
-ARCH?=$(shell uname -m)
 ifneq ($(findstring $(ARCH),x86_64/amd64),)
   CPU=x86-64
   INTEL=1
@@ -47,11 +50,11 @@ ifeq ($(ARCH),armv7l)
   BIT=32
   #LOW_ASM_SRC=src/asm/low_arm.s
 endif
-ifeq ($(ARCH),aarch64)
+ifneq ($(findstring $(ARCH),aarch64/arm64),)
   CPU=aarch64
   BIT=64
 endif
-ifeq ($(findstring $(OS),mac/mingw64),)
+ifeq ($(findstring $(OS),mac/mac-m1/mingw64/openbsd),)
   LDFLAGS+=-lrt
 endif
 
@@ -95,6 +98,9 @@ CFLAGS+=$(CFLAGS_OPT_USER)
 endif
 CFLAGS+=$(CFLAGS_USER)
 MCL_USE_GMP?=1
+ifneq ($(OS),mac/mac-m1,)
+  MCL_USE_GMP=0
+endif
 MCL_USE_OPENSSL?=1
 ifeq ($(MCL_USE_GMP),0)
   CFLAGS+=-DMCL_USE_VINT

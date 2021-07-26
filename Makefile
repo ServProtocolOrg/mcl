@@ -78,6 +78,10 @@ ifneq ($(CPU),)
   ASM_SRC=$(ASM_SRC_PATH_NAME).s
 endif
 ASM_OBJ=$(OBJ_DIR)/$(CPU).o
+ifeq ($(OS),mac-m1)
+  ASM_SRC=src/base64.ll
+  ASM_OBJ=$(OBJ_DIR)/base64.o
+endif
 LIB_OBJ=$(OBJ_DIR)/fp.o
 BN256_OBJ=$(OBJ_DIR)/bn_c256.o
 BN384_OBJ=$(OBJ_DIR)/bn_c384.o
