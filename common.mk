@@ -14,14 +14,15 @@ endif
 ifeq ($(UNAME_S),Darwin)
   ifeq ($(ARCH),x86_64)
     OS=mac
+    GMP_DIR?=/usr/local/opt/gmp
   else
     OS=mac-m1
+    GMP_DIR?=/opt/homebrew/opt/gmp
   endif
   LIB_SUF=dylib
-  OPENSSL_DIR?=/opt/homebrew/opt/openssl@1.1
+  OPENSSL_DIR?=/usr/local/opt/openssl
   CFLAGS+=-I$(OPENSSL_DIR)/include
   LDFLAGS+=-L$(OPENSSL_DIR)/lib
-  GMP_DIR?=/opt/homebrew/opt/gmp
   CFLAGS+=-I$(GMP_DIR)/include
   LDFLAGS+=-L$(GMP_DIR)/lib
 else
@@ -98,9 +99,6 @@ CFLAGS+=$(CFLAGS_OPT_USER)
 endif
 CFLAGS+=$(CFLAGS_USER)
 MCL_USE_GMP?=1
-# ifneq ($(OS),mac/mac-m1,)
-#   MCL_USE_GMP=0
-# endif
 MCL_USE_OPENSSL?=1
 ifeq ($(MCL_USE_GMP),0)
   CFLAGS+=-DMCL_USE_VINT
