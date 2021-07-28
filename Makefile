@@ -139,6 +139,15 @@ ifneq ($(findstring $(OS),mac/mingw64),)
   SHE384_SLIB_LDFLAGS+=-l$(MCL_SNAME) -L./lib
   SHE384_256_SLIB_LDFLAGS+=-l$(MCL_SNAME) -L./lib
 endif
+ifneq ($(findstring $(OS),mac/mac-m1/mingw64),)
+  BN256_SLIB_LDFLAGS+=-l$(MCL_SNAME) -L./lib
+  BN384_SLIB_LDFLAGS+=-l$(MCL_SNAME) -L./lib
+  BN384_256_SLIB_LDFLAGS+=-l$(MCL_SNAME) -L./lib
+  BN512_SLIB_LDFLAGS+=-l$(MCL_SNAME) -L./lib
+  SHE256_SLIB_LDFLAGS+=-l$(MCL_SNAME) -L./lib
+  SHE384_SLIB_LDFLAGS+=-l$(MCL_SNAME) -L./lib
+  SHE384_256_SLIB_LDFLAGS+=-l$(MCL_SNAME) -L./lib
+endif
 ifeq ($(OS),mingw64)
   MCL_SLIB_LDFLAGS+=-Wl,--out-implib,$(LIB_DIR)/lib$(MCL_SNAME).a
   BN256_SLIB_LDFLAGS+=-Wl,--out-implib,$(LIB_DIR)/lib$(BN256_SNAME).a
