@@ -72,6 +72,9 @@
 	#endif
 #endif
 
+// LLONG_MIN in limits.h is not defined in some env.
+#define CYBOZU_LLONG_MIN (-9223372036854775807ll-1)
+
 #define CYBOZU_CPP_VERSION_CPP03 0
 #define CYBOZU_CPP_VERSION_TR1 1
 #define CYBOZU_CPP_VERSION_CPP11 2
@@ -88,13 +91,13 @@
 	#define CYBOZU_CPP_VERSION CYBOZU_CPP_VERSION_CPP17
 #elif (__cplusplus >= 201402)
 	#define CYBOZU_CPP_VERSION CYBOZU_CPP_VERSION_CPP14
-#elif (__cplusplus >= 201103) || (_MSC_VER >= 1500) || defined(__GXX_EXPERIMENTAL_CXX0X__)
+#elif (__cplusplus >= 201103) || (defined(_MSC_VER) && _MSC_VER >= 1500) || defined(__GXX_EXPERIMENTAL_CXX0X__)
 	#if defined(_MSC_VER) && (_MSC_VER <= 1600)
 		#define CYBOZU_CPP_VERSION CYBOZU_CPP_VERSION_TR1
 	#else
 		#define CYBOZU_CPP_VERSION CYBOZU_CPP_VERSION_CPP11
 	#endif
-#elif CYBOZU_GNUC_PREREQ(4, 5) || (CYBOZU_GNUC_PREREQ(4, 2) && __GLIBCXX__ >= 20070719) || defined(__INTEL_COMPILER) || (__clang_major__ >= 3)
+#elif CYBOZU_GNUC_PREREQ(4, 5) || (CYBOZU_GNUC_PREREQ(4, 2) && (defined(__GLIBCXX__) &&__GLIBCXX__ >= 20070719)) || defined(__INTEL_COMPILER) || (__clang_major__ >= 3)
 	#define CYBOZU_CPP_VERSION CYBOZU_CPP_VERSION_TR1
 #else
 	#define CYBOZU_CPP_VERSION CYBOZU_CPP_VERSION_CPP03
@@ -115,7 +118,7 @@
 #endif
 
 #ifndef CYBOZU_OS_BIT
-	#if defined(_WIN64) || defined(__x86_64__) || defined(__AARCH64EL__) || defined(__EMSCRIPTEN__)
+	#if defined(_WIN64) || defined(__x86_64__) || defined(__AARCH64EL__) || defined(__EMSCRIPTEN__) || defined(__LP64__)
 		#define CYBOZU_OS_BIT 64
 	#else
 		#define CYBOZU_OS_BIT 32
@@ -143,6 +146,8 @@
 		#define CYBOZU_ENDIAN CYBOZU_ENDIAN_LITTLE
 	#elif (CYBOZU_HOST == CYBOZU_HOST_ARM) && (defined(__ARM_EABI__) || defined(__AARCH64EL__))
 		#define CYBOZU_ENDIAN CYBOZU_ENDIAN_LITTLE
+	#elif defined(__s390x__)
+		#define CYBOZU_ENDIAN CYBOZU_ENDIAN_BIG
 	#else
 		#define CYBOZU_ENDIAN CYBOZU_ENDIAN_UNKNOWN
 	#endif
@@ -150,8 +155,10 @@
 
 #if CYBOZU_CPP_VERSION >= CYBOZU_CPP_VERSION_CPP11
 	#define CYBOZU_NOEXCEPT noexcept
+	#define CYBOZU_NULLPTR nullptr
 #else
 	#define CYBOZU_NOEXCEPT throw()
+	#define CYBOZU_NULLPTR 0
 #endif
 namespace cybozu {
 template<class T>
