@@ -20,7 +20,7 @@ ifeq ($(UNAME_S),Darwin)
     GMP_DIR?=/opt/homebrew/opt/gmp
   endif
   LIB_SUF=dylib
-  OPENSSL_DIR?=/usr/local/opt/openssl
+  OPENSSL_DIR?=/opt/homebrew/opt/openssl@1.1
   CFLAGS+=-I$(OPENSSL_DIR)/include
   LDFLAGS+=-L$(OPENSSL_DIR)/lib
   CFLAGS+=-I$(GMP_DIR)/include
